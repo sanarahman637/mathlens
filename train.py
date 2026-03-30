@@ -233,7 +233,7 @@ def train_model(model, x_train, y_train, x_val, y_val):
         callbacks.ReduceLROnPlateau(factor=0.5, patience=3,
                                     monitor="val_loss", verbose=1),
         callbacks.ModelCheckpoint(
-            os.path.join(MODELS_DIR, "best_model.keras"),
+            os.path.join(MODELS_DIR, "best_model.h5"),
             save_best_only=True, monitor="val_accuracy", verbose=1)
     ]
 
@@ -301,7 +301,7 @@ def save_artifacts(model):
     print("[6/6] Saving model & label map …")
 
     # Keras native format (.keras) — recommended
-    model_path = os.path.join(MODELS_DIR, "digit_math_recognizer.keras")
+    model_path = os.path.join(MODELS_DIR, "digit_math_recognizer.h5")
     model.save(model_path)
 
     # Also save as SavedModel (TF serving / TFLite friendly)
@@ -313,7 +313,7 @@ def save_artifacts(model):
     with open(label_path, "w") as f:
         json.dump(LABEL_MAP, f, indent=2)
 
-    print(f"      ✅  Keras model  → {model_path}")
+    print(f"      ✅  Model (.h5)  → {model_path}")
     print(f"      ✅  SavedModel   → {tf_path}/")
     print(f"      ✅  Label map    → {label_path}")
 
