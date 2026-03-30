@@ -50,14 +50,16 @@ section[data-testid="stSidebar"] {
 """, unsafe_allow_html=True)
 
 # ---------------- LOAD MODEL ----------------
-@st.cache_resource
+@st.cache(allow_output_mutation=True)
 def load_model():
-    model = tf.keras.models.load_model("models/digit_math_recognizer.h5")
+    model = tf.keras.models.load_model(
+        "models/digit_math_recognizer.h5",
+        compile=False   # <-- skip optimizer loading
+    )
     with open("models/label_map.json") as f:
         label_map = json.load(f)
         label_map = {int(k): v for k, v in label_map.items()}
     return model, label_map
-
 model, label_map = load_model()
 
 # ---------------- PREPROCESS ----------------
@@ -250,7 +252,8 @@ with col2:
 
     if probs is not None:   # 🔥 THIS FIXES YOUR ERROR
         for i in range(len(probs)):
-            st.progress(float(probs[i]), text=f"{label_map[i]} ({probs[i]*100:.1f}%)")
+         st.write(f"{label_map[i]} ({probs[i]*100:.1f}%)")
+         st.progress(float(probs[i]))   
     else:
          st.info("Draw and click Predict to see confidence")
 
